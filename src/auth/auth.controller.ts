@@ -6,10 +6,12 @@ import {
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
+import { JwtCookieGuard } from 'src/guard';
 
 @Controller('auth')
 export class AuthController {
@@ -36,6 +38,7 @@ export class AuthController {
   }
 
   //   Logout User
+  @UseGuards(JwtCookieGuard)
   @HttpCode(HttpStatus.OK)
   @Get('logout')
   logout(@Res({ passthrough: true }) response: Response) {

@@ -8,25 +8,31 @@ export class TodoServices {
   constructor(private prismaService: PrismaService) {}
 
   // Retrieve All todo from Database
-  async getAllTodo() {
-    return await this.prismaService.todo.findMany();
+
+  async getAllTodo(userId: string) {
+    return await this.prismaService.todo.findMany({
+      where: { userId: userId },
+    });
   }
 
   // Get a single Todo
-  async getSingleTodoById(todoId: string) {
-    return await this.prismaService.todo.findFirst({ where: { id: todoId } });
+  async getSingleTodoById(userId: string, todoId: string) {
+    return await this.prismaService.todo.findFirst({
+      where: { id: todoId, userId: userId },
+    });
   }
 
   // Create a new Todo
-  async createTodo(body: any) {
+  async createTodo(userId: string, body: CreateTodoDto) {
+    body['userId'] = userId;
     return await this.prismaService.todo.create({ data: body });
   }
 
   // Update Todo
-  async updateTodo(todoId: string, body: UpdateTodoDto) {
+  async updateTodo(todoId: string, userId: string, body: UpdateTodoDto) {
     try {
       return await this.prismaService.todo.update({
-        where: { id: todoId },
+        where: { id: todoId, userId: userId },
         data: body,
       });
     } catch (error) {
@@ -42,9 +48,11 @@ export class TodoServices {
   }
 
   // Delete Todo
-  async deleteTodo(todoId: string) {
+  async deleteTodo(userId: string, todoId: string) {
     try {
-      return await this.prismaService.todo.delete({ where: { id: todoId } });
+      return await this.prismaService.todo.delete({
+        where: { id: todoId, userId: userId },
+      });
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
