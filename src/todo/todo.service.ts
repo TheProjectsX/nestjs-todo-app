@@ -18,7 +18,7 @@ export class TodoServices {
   }
 
   // Create a new Todo
-  async createTodo(body: CreateTodoDto) {
+  async createTodo(body: any) {
     return await this.prismaService.todo.create({ data: body });
   }
 
